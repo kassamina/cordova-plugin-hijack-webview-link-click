@@ -19,10 +19,7 @@
 
 
     - (WKWebView*) webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
-        if (!navigationAction.targetFrame.isMainFrame) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:navigationAction.request.URL.absoluteString]];
-        }
-
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:navigationAction.request.URL.absoluteString]];
         return nil;
     }
 
@@ -33,10 +30,12 @@
 
                 [pluginResult setKeepCallbackAsBool:YES];
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:[self getListenerId]];
+
+                return NO;
             }
         }
 
-        return NO;
+        return YES;
     }
 
     - (void) listen:(CDVInvokedUrlCommand*) command {
