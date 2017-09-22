@@ -28,7 +28,7 @@
 
     - (bool) shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
         if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-            if ([self getListenerId] != "") {
+            if ([[self getListenerId] isEqualToString:@""]) {
                 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[[request URL] absoluteString]];
 
                 [pluginResult setKeepCallbackAsBool:YES];
