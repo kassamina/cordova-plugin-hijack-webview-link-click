@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-hijack-webview-link-click",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Hijack Cordova webview link click.",
   "cordova": {
     "id": "cordova-plugin-hijack-webview-link-click",
