@@ -7,11 +7,12 @@ package no.amphibian.hijackwebviewlinkclick;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 public class HijackWebviewLinkClick extends CordovaPlugin {
-    private CallbackContext callback;
+    private CallbackContext callbackContext = null;
 
     @Override public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("listen")) {
@@ -28,16 +29,23 @@ public class HijackWebviewLinkClick extends CordovaPlugin {
     }
 
     @Override public boolean onOverrideUrlLoading(String url) {
-        if (this.callback) {
-            this.callback.success();
+        if (this.callbackContext != null) {
+            if (url.startsWith("http:")
+            || (url.startsWith("https:"))) {
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, url);
+                pluginResult.setKeepCallback(true);
+
+                this.callbackContext.sendPluginResult(pluginResult);
+                return true;
+            }
         }
 
         return false;
     }
 
-    private void listen(String listener, CallbackContext callbackContext) {
+    private void listen(CallbackContext callbackContext) {
         try {
-            this.callback = callbackContext;
+            this.callbackContext = callbackContext;
         }
 
         catch (android.content.ActivityNotFoundException error) {
@@ -45,9 +53,10 @@ public class HijackWebviewLinkClick extends CordovaPlugin {
         }
     }
 
-    private void deactivate(String listener) {
+    private void deactivate(CallbackContext callbackContext) {
         try {
-            this.callback = null;
+            this.callbackContext = null;
+            callbackContext.success();
         }
 
         catch (android.content.ActivityNotFoundException error) {
