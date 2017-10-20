@@ -17,4 +17,15 @@
         <header-file src="src/ios/HijackWebviewLinkClick.h" />
         <source-file src="src/ios/HijackWebviewLinkClick.m" />
     </platform>
+
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="HijackWebviewLinkClick">
+                <param name="android-package" value="no.amphibian.hijackwebviewlinkclick.HijackWebviewLinkClick" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/HijackWebviewLinkClick.java" target-dir="src/no/amphibian/hijackwebviewlinkclick" />
+    </platform>
 </plugin>
