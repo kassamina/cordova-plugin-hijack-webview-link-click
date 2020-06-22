@@ -1,17 +1,16 @@
 {
   "name": "cordova-plugin-hijack-webview-link-click",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Hijack Cordova webview link click.",
   "cordova": {
     "id": "cordova-plugin-hijack-webview-link-click",
     "platforms": [
-      "ios",
-      "android"
+      "ios"
     ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thomaslindstrom/cordova-plugin-hijack-webview-link-click.git"
+    "url": "git@github.com:kassamina/cordova-plugin-hijack-webview-link-click.git"
   },
   "keywords": [
     "cordova",
@@ -21,13 +20,12 @@
     "click",
     "navigation",
     "ecosystem:cordova",
-    "cordova-ios",
-    "cordova-android"
+    "cordova-ios"
   ],
-  "author": "Thomas Lindstrøm <t@hom.as>",
+  "author": "Zoe Toth <venna138@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thomaslindstrom/cordova-plugin-hijack-webview-link-click/issues"
+    "url": "https://github.com/kassamina/cordova-plugin-hijack-webview-link-click/issues"
   },
-  "homepage": "https://github.com/thomaslindstrom/cordova-plugin-hijack-webview-link-click#readme"
+  "homepage": "https://github.com/kassamina/cordova-plugin-hijack-webview-link-click#readme"
 }

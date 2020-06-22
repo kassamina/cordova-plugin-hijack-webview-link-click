@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="cordova-plugin-hijack-webview-link-click" version="1.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="cordova-plugin-hijack-wkwebview-link-click" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>HijackWebviewLinkClick</name>
     <description>Hijack webview link click.</description>
     <keywords>cordova,hijack,webview,link,click,navigation</keywords>
@@ -11,21 +11,11 @@
         <config-file target="config.xml" parent="/*">
             <feature name="HijackWebviewLinkClick">
                 <param name="ios-package" value="HijackWebviewLinkClick"/>
+                <param name="onload" value="true" />
             </feature>
         </config-file>
 
         <header-file src="src/ios/HijackWebviewLinkClick.h" />
         <source-file src="src/ios/HijackWebviewLinkClick.m" />
-    </platform>
-
-    <platform name="android">
-        <config-file target="config.xml" parent="/*">
-            <feature name="HijackWebviewLinkClick">
-                <param name="android-package" value="no.amphibian.hijackwebviewlinkclick.HijackWebviewLinkClick" />
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-
-        <source-file src="src/android/HijackWebviewLinkClick.java" target-dir="src/no/amphibian/hijackwebviewlinkclick" />
     </platform>
 </plugin>

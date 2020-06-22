@@ -6,8 +6,13 @@
 #import <WebKit/WebKit.h>
 #import "HijackWebviewLinkClick.h"
 
+static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
+
 @implementation HijackWebviewLinkClick
+    @synthesize notificationCallbackId;
+
     - (void) pluginInitialize {
+        [self _logInfo:@"Starting HijackWebviewLinkClick plugin"];
         id<WKUIDelegate> uiDelegate = self;
 
         [self.webViewEngine updateWithInfo:@{
@@ -17,48 +22,55 @@
         [self setListenerId:@""];
     }
 
-
     - (WKWebView*) webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:navigationAction.request.URL.absoluteString]];
+        if (self.notificationCallbackId != nil) {
+            NSMutableDictionary* infoObject = [NSMutableDictionary dictionaryWithCapacity:3];
+            [infoObject setObject:[NSNumber numberWithInteger:[navigationAction navigationType]] forKey:@"navigatidonType"];
+            [infoObject setObject:[[[navigationAction request] URL] absoluteString] forKey:@"url"];
+            [infoObject setObject:[[[[navigationAction sourceFrame] request] URL] absoluteString] forKey:@"sourceFrame"];
+
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:infoObject];
+            [pluginResult setKeepCallbackAsBool:YES];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.notificationCallbackId];
+        }
+
+         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:navigationAction.request.URL.absoluteString]];
         return nil;
     }
 
-    - (bool) shouldOverrideLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
-        if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-            if (![[self getListenerId] isEqualToString:@""]) {
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[[request URL] absoluteString]];
-
-                [pluginResult setKeepCallbackAsBool:YES];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:[self getListenerId]];
-
-                return NO;
-            }
-        }
-
-        return YES;
-    }
-
-    - (void) listen:(CDVInvokedUrlCommand*) command {
+    - (void)onLinkClicked:(CDVInvokedUrlCommand *)command {
         @try {
-            [self setListenerId:command.callbackId];
-        }
-
-        @catch (NSException *exception) {
-            NSString* reason = [exception reason];
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:reason];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+            self.notificationCallbackId = command.callbackId;
+        }@catch (NSException *exception) {
+            [self handlePluginException:exception :command];
         }
     }
 
-    - (void) deactivate:(CDVInvokedUrlCommand*) command {
-        @try {
-            [self setListenerId:@""];
-        }
+    - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command {
+        [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
 
-        @catch (NSException *exception) {
-            NSString* reason = [exception reason];
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:reason];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        }
+    - (void)executeGlobalJavascript: (NSString*)jsString {
+        [self.commandDelegate evalJs:jsString];
+    }
+
+    - (void)_logError: (NSString*)msg {
+        NSLog(@"%@ ERROR: %@", LOG_TAG, msg);
+        NSString* jsString = [NSString stringWithFormat:@"console.error(\"%@: %@\")", LOG_TAG, [self escapeJavascriptString:msg]];
+        [self executeGlobalJavascript:jsString];
+    }
+
+    - (void)_logInfo: (NSString*)msg {
+        NSLog(@"%@ INFO: %@", LOG_TAG, msg);
+        NSString* jsString = [NSString stringWithFormat:@"console.info(\"%@: %@\")", LOG_TAG, [self escapeJavascriptString:msg]];
+        [self executeGlobalJavascript:jsString];
+    }
+
+    - (NSString*)escapeJavascriptString: (NSString*)str {
+        NSString* result = [str stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
+        result = [result stringByReplacingOccurrencesOfString: @"\n" withString: @"\\\n"];
+        return result;
     }
 @end;
