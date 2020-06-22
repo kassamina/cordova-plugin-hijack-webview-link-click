@@ -25,7 +25,7 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
     - (WKWebView*) webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
         if (self.notificationCallbackId != nil) {
             NSMutableDictionary* infoObject = [NSMutableDictionary dictionaryWithCapacity:3];
-            [infoObject setObject:[NSNumber numberWithInteger:[navigationAction navigationType]] forKey:@"navigatidonType"];
+            [infoObject setObject:[NSNumber numberWithInteger:[navigationAction navigationType]] forKey:@"navigationType"];
             [infoObject setObject:[[[navigationAction request] URL] absoluteString] forKey:@"url"];
             [infoObject setObject:[[[[navigationAction sourceFrame] request] URL] absoluteString] forKey:@"sourceFrame"];
 
