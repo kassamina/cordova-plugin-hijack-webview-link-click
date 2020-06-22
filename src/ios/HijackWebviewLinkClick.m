@@ -34,7 +34,6 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
             [self.commandDelegate sendPluginResult:pluginResult callbackId:self.notificationCallbackId];
         }
 
-         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:navigationAction.request.URL.absoluteString]];
         return nil;
     }
 
