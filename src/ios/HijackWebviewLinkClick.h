@@ -12,8 +12,6 @@
 
     // exported
     - (void) onLinkClicked:(CDVInvokedUrlCommand*)command;
-//    - (void) listen: (CDVInvokedUrlCommand*) command;
-//    - (void) deactivate: (CDVInvokedUrlCommand*) command;
 
     // Internals
     - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command;
