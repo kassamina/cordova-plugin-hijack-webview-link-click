@@ -12,6 +12,8 @@
 
     // exported
     - (void) onLinkClicked:(CDVInvokedUrlCommand*)command;
+    - (BOOL) respondsToSelector:(SEL)selector;
+    - (BOOL) shouldOverrideRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType;
 
     // Internals
     - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command;

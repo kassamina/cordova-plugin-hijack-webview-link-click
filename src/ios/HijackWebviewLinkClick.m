@@ -37,13 +37,36 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
         return nil;
     }
 
-    - (void)onLinkClicked:(CDVInvokedUrlCommand *)command {
+    - (void) onLinkClicked:(CDVInvokedUrlCommand *)command {
         @try {
             self.notificationCallbackId = command.callbackId;
         }@catch (NSException *exception) {
             [self handlePluginException:exception :command];
         }
     }
+
+    - (BOOL)shouldOverrideRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
+        NSString *scheme = [request URL].scheme;
+        [self _logInfo:[NSString stringWithFormat:@"shouldOverrideRequest: %ld, %@", (long)navigationType, scheme]];
+
+        if (self.notificationCallbackId != nil && navigationType == 0 && ([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"])) {
+             NSMutableDictionary* infoObject = [NSMutableDictionary dictionaryWithCapacity:2];
+             [infoObject setObject:[NSNumber numberWithInteger:navigationType] forKey:@"navigationType"];
+             [infoObject setObject:[[request URL] absoluteString] forKey:@"url"];
+
+             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:infoObject];
+             [pluginResult setKeepCallbackAsBool:YES];
+             [self.commandDelegate sendPluginResult:pluginResult callbackId:self.notificationCallbackId];
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+
+    - (BOOL) respondsToSelector:(SEL)selector {
+        return selector == NSSelectorFromString(@"shouldOverrideRequest:navigationType:");;
+    }
+
 
     - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command {
         [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
