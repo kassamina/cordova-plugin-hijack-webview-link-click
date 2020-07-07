@@ -12,10 +12,10 @@
 
     // exported
     - (void) onLinkClicked:(CDVInvokedUrlCommand*)command;
-    - (BOOL) respondsToSelector:(SEL)selector;
-    - (BOOL) shouldOverrideRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType;
 
     // Internals
+    - (BOOL) respondsToSelector:(SEL)selector;
+    - (BOOL) shouldOverrideRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType;
     - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command;
     - (void) _logError: (NSString*)msg;
     - (void) _logInfo: (NSString*)msg;

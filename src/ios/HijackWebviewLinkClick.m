@@ -51,7 +51,7 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
 
         if (self.notificationCallbackId != nil && navigationType == 0 && ([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"])) {
              NSMutableDictionary* infoObject = [NSMutableDictionary dictionaryWithCapacity:2];
-             [infoObject setObject:[NSNumber numberWithInteger:navigationType] forKey:@"navigationType"];
+             [infoObject setObject:[NSNumber numberWithInteger:(int)navigationType] forKey:@"navigationType"];
              [infoObject setObject:[[request URL] absoluteString] forKey:@"url"];
 
              CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:infoObject];
@@ -64,7 +64,7 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
     }
 
     - (BOOL) respondsToSelector:(SEL)selector {
-        return selector == NSSelectorFromString(@"shouldOverrideRequest:navigationType:");;
+        return selector == NSSelectorFromString(@"shouldOverrideRequest:navigationType:") || selector == NSSelectorFromString(@"onLinkClicked:");
     }
 
 
