@@ -64,9 +64,12 @@ static NSString*const LOG_TAG = @"HijackWebviewLinkClick[native]";
     }
 
     - (BOOL) respondsToSelector:(SEL)selector {
-        return selector == NSSelectorFromString(@"shouldOverrideRequest:navigationType:") || selector == NSSelectorFromString(@"onLinkClicked:");
+        if (selector == NSSelectorFromString(@"shouldOverrideRequest:navigationType:") || selector == NSSelectorFromString(@"onLinkClicked:")) {
+          return YES;
+        } else {
+            return [CDVPlugin instancesRespondToSelector:selector];
+        }
     }
-
 
     - (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command {
         [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
